@@ -1,44 +1,40 @@
 package main
+import ( "math";"fmt")
 
-
-import (
-	"fmt"
-	"errors"
-)
-
-// Variables
-const nam string = "asdf"
-var name int = 9
-
-func main() {
-	// name := "asdf"
-    // fmt.Printf("Hello, %s Senior Dev. The environment is ready.",name)
-	// for i :=0; i<5;i++{
-	// 	fmt.Println(i)	}
-	// for i := range 7{
-	// 	fmt.Println(i)
-	// }
-	// count:=0
-	// for count<10{
-	// 	fmt.Println(count)
-	// 	count++	}
-
-	ans, err := divide(10,0)
-
-	if err != nil{
-		fmt.Println("Error:", err)
-		return
-	}
-	fmt.Println("Answer is:",ans)
+type Shape interface{
+	Area() float64
 }
 
-func divide (a int, b int) (int, error){
-	if b == 0 {
-		return 0, errors.New("cannot divide by zero")
-	}
-	return a/b, nil
+type Rectangle struct{
+	Width float64
+	Height float64
 }
 
+func (r Rectangle) Area() float64{
+	return r.Height * r.Width
+}
 
+type Circle struct{
+	Radius float64
+}
 
+func (c Circle) Area() float64{
+	return (math.Pi * c.Radius) * c.Radius
+}
+
+func printArea (s Shape){
+	fmt.Println(s.Area())
+}
+
+func main(){
+	// printArea(Circle{Radius: 24.56})
+	// printArea(Rectangle{Width: 34.6, Height: 23.54})
+	age := 25
+	fmt.Println(age)  // Output: 25
+	fmt.Println(&age) // Output: 0xc000012088 (The memory address)
+
+	// * operatoor
+	var ptr *int = &age
+	fmt.Println(*ptr == age)
+}
 
