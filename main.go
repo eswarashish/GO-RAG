@@ -1,5 +1,6 @@
 package main
 import ( "math";"fmt")
+import ("GO-RAG/objects")
 
 type Shape interface{
 	Area() float64
@@ -29,12 +30,16 @@ func printArea (s Shape){
 func main(){
 	// printArea(Circle{Radius: 24.56})
 	// printArea(Rectangle{Width: 34.6, Height: 23.54})
-	age := 25
-	fmt.Println(age)  // Output: 25
-	fmt.Println(&age) // Output: 0xc000012088 (The memory address)
+	// age := 25
+	// fmt.Println(age)  // Output: 25
+	// fmt.Println(&age) // Output: 0xc000012088 (The memory address)
 
-	// * operatoor
-	var ptr *int = &age
-	fmt.Println(*ptr == age)
+	// // * operatoor
+	// var ptr *int = &age
+	// fmt.Println(*ptr == age)
+	account := objects.Account{Owner: "Ashish"}
+	personal := objects.PersonalAccount{Account: account }
+	objects.PerfomTransaction(&personal,64.5,true)
+	
 }
 
