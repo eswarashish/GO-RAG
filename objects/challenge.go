@@ -28,7 +28,7 @@ func (p *PersonalAccount) Deposit(amount float64){
 }
 
 func (p *PersonalAccount) Withdraw(amount float64) error{
-	if ((p.balance - amount) > 0){
+	if ((p.balance - amount) >= 0){
 		p.balance -= amount
 		return nil
 	}
@@ -39,11 +39,10 @@ func (p *PersonalAccount) Withdraw(amount float64) error{
 func PerfomTransaction(v Vault, amount float64, isDeposit bool){
 	if isDeposit{
 		v.Deposit(amount)
-	}
-	err := v.Withdraw(amount)
+	}else{ err := v.Withdraw(amount)
 	if err != nil{
 		fmt.Println("error occured", err)
-	}
+	}}
 }
 
 

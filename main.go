@@ -40,6 +40,7 @@ func main(){
 	account := objects.Account{Owner: "Ashish"}
 	personal := objects.PersonalAccount{Account: account }
 	objects.PerfomTransaction(&personal,64.5,true)
+	fmt.Println(personal.GetBalance())
 	
 }
 
