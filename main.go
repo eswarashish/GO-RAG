@@ -1,7 +1,8 @@
 package main
 import ( "math";"fmt";"sync")
 // import ("GO-RAG/objects")
-import ("GO-RAG/download")
+// import ("GO-RAG/download")
+import ("GO-RAG/datatypes")
 
 type Shape interface{
 	Area() float64
@@ -10,7 +11,7 @@ type Shape interface{
 type Rectangle struct{
 	Width float64
 	Height float64
-}
+	}
 
 func (r Rectangle) Area() float64{
 	return r.Height * r.Width
@@ -44,17 +45,38 @@ func main(){
 	// objects.PerfomTransaction(&personal,64.5,true)
 	// fmt.Println(personal.GetBalance())
 	
-	files := []string{"tags.json", "profile.jpg", "video.mp4", "report.pdf", "config.yaml"}
-	i := 0
-	for i<len(files){
-		wg.Add(1)//this only represents the number of routines going to get spawned or called now
-		go download.DownloadFile(files[i],&wg)
-		i++
+	// files := []string{"tags.json", "profile.jpg", "video.mp4", "report.pdf", "config.yaml"}
+	// i := 0
+	// for i<len(files){
+	// 	wg.Add(1)//this only represents the number of routines going to get spawned or called now
+	// 	go download.DownloadFile(files[i],&wg)
+	// 	i++
 	
 		
-	}
-	wg.Wait()
-	fmt.Println("All files downloaded successfully")
+	// }
+	// wg.Wait()
+	// fmt.Println("All files downloaded successfully")
+	// names := datatypes.Names()
+	// fmt.Print(names[0:1])
+	// numbers := datatypes.Numbers()
+	// results := make(map[string]int)
+	// high, low := 0,0
+	// for _,val := range numbers{
+		
+	// 	if val>25{
+	// 		high++
+	// 		key := fmt.Sprintf("High-%d", high)
+	// 		results[key] = val
+	// 	}else if val<=25{
+	// 		low++
+	// 		key := fmt.Sprintf("Low-%d", low)
+	// 		results[key] = val
+	// 	}
+	// }
+	// fmt.Print(results)
 
-}
+	scores:= datatypes.Map()
+	val, ok := scores["Hi"]
+	fmt.Print(val,ok)
+	}	
 
