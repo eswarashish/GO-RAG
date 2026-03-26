@@ -1,6 +1,7 @@
 package main
-import ( "math";"fmt")
-import ("GO-RAG/objects")
+import ( "math";"fmt";"sync")
+// import ("GO-RAG/objects")
+import ("GO-RAG/download")
 
 type Shape interface{
 	Area() float64
@@ -27,6 +28,7 @@ func printArea (s Shape){
 	fmt.Println(s.Area())
 }
 
+var wg sync.WaitGroup
 func main(){
 	// printArea(Circle{Radius: 24.56})
 	// printArea(Rectangle{Width: 34.6, Height: 23.54})
@@ -36,11 +38,23 @@ func main(){
 
 	// // * operatoor
 	// var ptr *int = &age
-	// fmt.Println(*ptr == age)
-	account := objects.Account{Owner: "Ashish"}
-	personal := objects.PersonalAccount{Account: account }
-	objects.PerfomTransaction(&personal,64.5,true)
-	fmt.Println(personal.GetBalance())
+	// // fmt.Println(*ptr == age)
+	// account := objects.Account{Owner: "Ashish"}
+	// personal := objects.PersonalAccount{Account: account }
+	// objects.PerfomTransaction(&personal,64.5,true)
+	// fmt.Println(personal.GetBalance())
 	
+	files := []string{"tags.json", "profile.jpg", "video.mp4", "report.pdf", "config.yaml"}
+	i := 0
+	for i<len(files){
+		wg.Add(1)//this only represents the number of routines going to get spawned or called now
+		go download.DownloadFile(files[i],&wg)
+		i++
+	
+		
+	}
+	wg.Wait()
+	fmt.Println("All files downloaded successfully")
+
 }
 
