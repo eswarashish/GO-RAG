@@ -1,8 +1,13 @@
 package main
-import ( "math";"fmt";"sync")
-// import ("GO-RAG/objects")
-// import ("GO-RAG/download")
-import ("GO-RAG/datatypes")
+
+import (
+	"GO-RAG/channels" // import ("GO-RAG/objects")
+	// import ("GO-RAG/download")
+	// "GO-RAG/datatypes"
+	"fmt"
+	"math"
+	"sync"
+)
 
 type Shape interface{
 	Area() float64
@@ -75,8 +80,13 @@ func main(){
 	// }
 	// fmt.Print(results)
 
-	scores:= datatypes.Map()
-	val, ok := scores["Hi"]
-	fmt.Print(val,ok)
+	// scores:= datatypes.Map()
+	// val, ok := scores["Hi"]
+	// fmt.Print(val,ok)
+	ch := make(chan string)
+	go channels.Ping(ch)
+	fmt.Println("waiting for ping")
+	msg:= <- ch
+	fmt.Println(msg)
 	}	
 
