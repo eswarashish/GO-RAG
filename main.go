@@ -84,16 +84,24 @@ func main(){
 	// scores:= datatypes.Map()
 	// val, ok := scores["Hi"]
 	// fmt.Print(val,ok)
-	ch := make(chan int)
-	// go channels.Ping(ch)
-	// fmt.Println("waiting for ping")
-	// msg:= <- ch
-	// fmt.Println(msg)
-	go pipe.Producer(ch)
+	// ch := make(chan int)
+	// // go channels.Ping(ch)
+	// // fmt.Println("waiting for ping")
+	// // msg:= <- ch
+	// // fmt.Println(msg)
+	// go pipe.Producer(ch)
 
-	for val:= range ch{
-		fmt.Println("Value recieved", val)
+	// for val:= range ch{
+	// 	fmt.Println("Value recieved", val)
+	// }
+
+	nums := make(chan int,10)
+	results:= make(chan int,10)
+
+	go pipe.GenerateNumbers(nums)
+	go pipe.SquareNumbers(nums,results)
+	for val:= range results{
+		fmt.Println("Value sqaured is",val)
 	}
-
 	}	
 
