@@ -2,11 +2,14 @@ package main
 
 import (
 	// "GO-RAG/channels" // import ("GO-RAG/objects")
-	"GO-RAG/pipe"
+	// "GO-RAG/pipe"
 	// import ("GO-RAG/download")
 	// "GO-RAG/datatypes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"math"
+	"net/http"
 	"sync"
 )
 
@@ -35,6 +38,22 @@ func printArea (s Shape){
 	fmt.Println(s.Area())
 }
 
+type Todo struct {
+    UserID    int    `json:"userId"` // The tag tells Go which JSON key to map to
+    ID        int    `json:"id"`
+    Title     string `json:"title"`
+    Completed bool   `json:"completed"`
+}
+
+// To turn JSON bytes into a Struct:
+var myTodo Todo
+
+type Post struct{
+	ID int `json:"id"`
+	Title string `json:"title"`
+}
+
+var myPost Post
 var wg sync.WaitGroup
 func main(){
 	// printArea(Circle{Radius: 24.56})
@@ -95,13 +114,47 @@ func main(){
 	// 	fmt.Println("Value recieved", val)
 	// }
 
-	nums := make(chan int,10)
-	results:= make(chan int,10)
+	// nums := make(chan int,10)
+	// results:= make(chan int,10)
 
-	go pipe.GenerateNumbers(nums)
-	go pipe.SquareNumbers(nums,results)
-	for val:= range results{
-		fmt.Println("Value sqaured is",val)
-	}
-	}	
+	// go pipe.GenerateNumbers(nums)
+	// go pipe.SquareNumbers(nums,results)
+	// for val:= range results{
+	// 	fmt.Println("Value sqaured is",val)
+	// }
+	// resp, err := http.Get("https://jsonplaceholder.typicode.com/todos/1")
+	// if err != nil{
+	// 	fmt.Println(err)
+	// 	return
+	// }
+	// defer resp.Body.Close()
+
+	// body,err := io.ReadAll(resp.Body)
+	// json.Unmarshal(body, &myTodo)
+	// fmt.Println(myTodo)
+
+// 	urls:= []string{"https://jsonplaceholder.typicode.com/posts/1","https://jsonplaceholder.typicode.com/posts/2","https://jsonplaceholder.typicode.com/posts/3"}
+// 	for i:= range len(urls){
+// 		wg.Add(1)
+// 		go fetchPost(urls[i],&wg)
+		
+
+// 	}
+// 	wg.Wait()
+
+// 	}	
+
+
+// func fetchPost(url string, wg *sync.WaitGroup){
+// 	defer wg.Done()
+// 	resp, err := http.Get(url)
+// 	if err!=nil{
+// 		fmt.Println(err)
+// 	}
+// 	defer resp.Body.Close()
+
+// 	body, _:= io.ReadAll(resp.Body)
+// 	json.Unmarshal(body,&myPost)
+// 	fmt.Println(myPost)
+}
 
