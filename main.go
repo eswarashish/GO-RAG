@@ -5,12 +5,14 @@ import (
 	// "GO-RAG/pipe"
 	// import ("GO-RAG/download")
 	// "GO-RAG/datatypes"
-	"encoding/json"
+	"context"
+	// "encoding/json"
 	"fmt"
 	"io"
 	"math"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type Shape interface{
@@ -133,28 +135,34 @@ func main(){
 	// json.Unmarshal(body, &myTodo)
 	// fmt.Println(myTodo)
 
-// 	urls:= []string{"https://jsonplaceholder.typicode.com/posts/1","https://jsonplaceholder.typicode.com/posts/2","https://jsonplaceholder.typicode.com/posts/3"}
-// 	for i:= range len(urls){
-// 		wg.Add(1)
-// 		go fetchPost(urls[i],&wg)
+	urls:= []string{"https://jsonplaceholder.typicode.com/posts/1","https://jsonplaceholder.typicode.com/posts/2","https://jsonplaceholder.typicode.com/posts/3"}
+	
+	for i:= range len(urls){
+		ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+		wg.Add(1)
+		go fetchPost(urls[i],&wg,ctx,cancel)
 		
 
-// 	}
-// 	wg.Wait()
+	}
+	wg.Wait()
 
-// 	}	
+	}	
 
 
-// func fetchPost(url string, wg *sync.WaitGroup){
-// 	defer wg.Done()
-// 	resp, err := http.Get(url)
-// 	if err!=nil{
-// 		fmt.Println(err)
-// 	}
-// 	defer resp.Body.Close()
-
-// 	body, _:= io.ReadAll(resp.Body)
-// 	json.Unmarshal(body,&myPost)
-// 	fmt.Println(myPost)
+func fetchPost(url string, wg *sync.WaitGroup, ctx context.Context, cancel context.CancelFunc){
+	
+	defer cancel()
+	defer wg.Done()
+	req, _ := http.NewRequestWithContext(ctx,"GET",url,nil)
+	client:=&http.Client{}
+	resp,err:=client.Do(req)
+	if err!=nil{
+		fmt.Println(err)
+		return
+	}
+	defer resp.Body.Close()
+	body, _:= io.ReadAll(resp.Body)
+	// json.Unmarshal(body,&myPost)
+	fmt.Println(string(body))
 }
 
