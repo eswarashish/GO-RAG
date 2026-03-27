@@ -1,7 +1,8 @@
 package main
 
 import (
-	"GO-RAG/channels" // import ("GO-RAG/objects")
+	// "GO-RAG/channels" // import ("GO-RAG/objects")
+	"GO-RAG/pipe"
 	// import ("GO-RAG/download")
 	// "GO-RAG/datatypes"
 	"fmt"
@@ -83,10 +84,16 @@ func main(){
 	// scores:= datatypes.Map()
 	// val, ok := scores["Hi"]
 	// fmt.Print(val,ok)
-	ch := make(chan string)
-	go channels.Ping(ch)
-	fmt.Println("waiting for ping")
-	msg:= <- ch
-	fmt.Println(msg)
+	ch := make(chan int)
+	// go channels.Ping(ch)
+	// fmt.Println("waiting for ping")
+	// msg:= <- ch
+	// fmt.Println(msg)
+	go pipe.Producer(ch)
+
+	for val:= range ch{
+		fmt.Println("Value recieved", val)
+	}
+
 	}	
 
