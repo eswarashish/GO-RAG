@@ -6,13 +6,13 @@ import (
 	// import ("GO-RAG/download")
 	// "GO-RAG/datatypes"
 	"context"
-	// "encoding/json"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math"
 	"net/http"
 	"sync"
-	"time"
+	// "time"
 )
 
 type Shape interface{
@@ -135,20 +135,45 @@ func main(){
 	// json.Unmarshal(body, &myTodo)
 	// fmt.Println(myTodo)
 
-	urls:= []string{"https://jsonplaceholder.typicode.com/posts/1","https://jsonplaceholder.typicode.com/posts/2","https://jsonplaceholder.typicode.com/posts/3"}
+	// urls:= []string{"https://jsonplaceholder.typicode.com/posts/1","https://jsonplaceholder.typicode.com/posts/2","https://jsonplaceholder.typicode.com/posts/3"}
 	
-	for i:= range len(urls){
-		ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
-		wg.Add(1)
-		go fetchPost(urls[i],&wg,ctx,cancel)
+	// for i:= range len(urls){
+	// 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Millisecond)
+	// 	wg.Add(1)
+	// 	go fetchPost(urls[i],&wg,ctx,cancel)
 		
 
+	// }
+	// wg.Wait()
+	
+	// 2. The "Router" - Map the URL to the Handler
+	http.HandleFunc("/ping", pingHandler)
+
+	fmt.Println("🚀 Server is running on http://localhost:8080")
+	
+	// 3. Start the server (This is an infinite loop that blocks forever)
+	err := http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println("Server crashed:", err)
 	}
-	wg.Wait()
 
 	}	
 
 
+	// 1. This is the "Handler" (Like your FastAPI endpoint)
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	// Let's create a map to act as our JSON response
+	response := map[string]string{
+		"status":  "success",
+		"message": "Pong! The Go server is alive.",
+	}
+
+	// Tell the browser "Hey, I'm sending JSON!"
+	w.Header().Set("Content-Type", "application/json")
+
+	// Encode the map into JSON and write it directly to the 'w' (ResponseWriter)
+	json.NewEncoder(w).Encode(response)
+}
 func fetchPost(url string, wg *sync.WaitGroup, ctx context.Context, cancel context.CancelFunc){
 	
 	defer cancel()
