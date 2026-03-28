@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package calc;
+
+option go_package = "GO-RAG/proto";
+
+message AddRequest {
+    int32 a =1;
+    int32 b = 2; //these are just ids and not actual values to be precise
+}
+
+message AddResponse {
+
+    int32 result = 1;
+}
+
+//The service; the function we call  remotely to execute the grpc call
+service Calculator {
+    rpc Add (AddRequest) returns (AddResponse);
+}

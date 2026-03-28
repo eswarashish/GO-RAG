@@ -12,6 +12,10 @@ import (
 	"math"
 	"net/http"
 	"sync"
+	"net"
+	"log"
+	pb "GO-RAG/proto"
+	"google.golang.org/grpc"
 	// "time"
 )
 
@@ -53,6 +57,10 @@ var myTodo Todo
 type Post struct{
 	ID int `json:"id"`
 	Title string `json:"title"`
+}
+
+type server struct{
+	pb.UnimplementedCalculatorServer
 }
 
 var myPost Post
@@ -146,20 +154,29 @@ func main(){
 	// }
 	// wg.Wait()
 	
-	// 2. The "Router" - Map the URL to the Handler
-	http.HandleFunc("/ping", pingHandler)
+	// // 2. The "Router" - Map the URL to the Handler
+	// http.HandleFunc("/ping", pingHandler)
 
-	fmt.Println("🚀 Server is running on http://localhost:8080")
+	// fmt.Println("🚀 Server is running on http://localhost:8080")
 	
-	// 3. Start the server (This is an infinite loop that blocks forever)
-	err := http.ListenAndServe(":8080", nil)
-	if err != nil {
-		fmt.Println("Server crashed:", err)
-	}
+	// // 3. Start the server (This is an infinite loop that blocks forever)
+	// err := http.ListenAndServe(":8080", nil)
+	// if err != nil {
+	// 	fmt.Println("Server crashed:", err)
+	// }
+
+	lis,_:= net.Listen("tcp",":50001")
+	s := grpc.NewServer()
+	pb.RegisterCalculatorServer(s, &server{})
+	log.Println("Server listening on :50001")
+	s.Serve(lis)
 
 	}	
 
-
+func (s *server) Add(ctx context.Context, in *pb.AddRequest) (*pb.AddResponse, error){
+	log.Printf("Received: %v + %v", in.A, in.B)
+	return  &pb.AddResponse{Result: in.A + in.B},nil
+}
 	// 1. This is the "Handler" (Like your FastAPI endpoint)
 func pingHandler(w http.ResponseWriter, r *http.Request) {
 	// Let's create a map to act as our JSON response
