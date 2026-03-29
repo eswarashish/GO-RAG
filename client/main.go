@@ -12,7 +12,7 @@ import (
 
 func main() {
 	// Connect to the server
-	conn, _ := grpc.Dial("localhost:50001", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	conn, _ := grpc.NewClient("localhost:50001", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	defer conn.Close()
 	c := pb.NewCalculatorClient(conn)
 
