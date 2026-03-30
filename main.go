@@ -5,6 +5,7 @@ import (
 	// "GO-RAG/pipe"
 	// import ("GO-RAG/download")
 	// "GO-RAG/datatypes"
+	// "GO-RAG/middleware"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 	"log"
 	pb "GO-RAG/proto"
 	"google.golang.org/grpc"
+	"time"
 	// "time"
 )
 
@@ -64,7 +66,48 @@ type server struct{
 }
 
 var myPost Post
-var wg sync.WaitGroup
+var wg *sync.WaitGroup
+
+
+type App struct{
+	client *http.Client
+}
+
+func (app *App) GetPostHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.URL.Query().Get("id")
+
+	if id == "" {
+		http.Error(w, "Missing 'id' parameter", http.StatusBadRequest)
+		return // MUST return so it stops processing!
+	}
+	
+	url := fmt.Sprintf("https://jsonplaceholder.typicode.com/posts/%s", id)
+	
+	// Create context
+	ctx, cancel := context.WithTimeout(context.Background(), 100*time.Millisecond)
+	defer cancel() // Safe to defer right away
+
+	// Create Request
+	req, _ := http.NewRequestWithContext(ctx, "GET", url, nil)
+
+	// Execute
+	client := app.client
+	resp, err := client.Do(req)
+	
+	// THE CRITICAL CHECK
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusGatewayTimeout)
+		return // MUST return here so we don't touch a nil resp!
+	}
+	
+	// Now we know resp is safe
+	defer resp.Body.Close()
+	
+	body, _ := io.ReadAll(resp.Body)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(body)
+}
+
 func main(){
 	// printArea(Circle{Radius: 24.56})
 	// printArea(Rectangle{Width: 34.6, Height: 23.54})
@@ -155,7 +198,7 @@ func main(){
 	// wg.Wait()
 	
 	// // 2. The "Router" - Map the URL to the Handler
-	// http.HandleFunc("/ping", pingHandler)
+	// // http.HandleFunc("/ping", pingHandler)
 
 	// fmt.Println("🚀 Server is running on http://localhost:8080")
 	
